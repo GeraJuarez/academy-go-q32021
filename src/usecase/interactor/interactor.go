@@ -17,7 +17,7 @@ type PokemonInteractor interface {
 	Get(id int) (model.Pokemon, error)
 }
 
-func NewPokemonInterator(repo repository.PokemonRepository) PokemonInteractor {
+func NewPokemonInteractor(repo repository.PokemonRepository) PokemonInteractor {
 	return &pokemonInteractor{repo}
 }
 
