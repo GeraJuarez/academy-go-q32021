@@ -14,9 +14,9 @@ type pokemonCSVReader struct {
 	pokemons map[int]model.Pokemon
 }
 
-func NewPokemonCSVReader() repository.PokemonRepository {
+func NewPokemonCSVReader(csvPath string) repository.PokemonRepository {
 	pkmnCSV := &pokemonCSVReader{
-		filePath: "./resources/pokemons.csv",
+		filePath: csvPath,
 		pokemons: make(map[int]model.Pokemon),
 	}
 

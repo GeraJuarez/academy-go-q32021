@@ -10,13 +10,14 @@ import (
 	"github.com/gerajuarez/wize-academy-go/usecase/repository"
 )
 
+var pkmnCSVRepo = NewPokemonCSVReader("./resources/pokemons.csv")
+
 func TestMain(m *testing.M) {
 	log.SetOutput(ioutil.Discard)
 	os.Exit(m.Run())
 }
 
 func TestCSVReadOK(t *testing.T) {
-	pkmnCSVRepo := NewPokemonCSVReader()
 	expected := "bulbasaur"
 	result, _ := pkmnCSVRepo.Get(1)
 
@@ -25,8 +26,7 @@ func TestCSVReadOK(t *testing.T) {
 	}
 }
 
-func TestCSVReadErr(t *testing.T) {
-	pkmnCSVRepo := NewPokemonCSVReader()
+func TestCSVReadErrNotFound(t *testing.T) {
 	expected := repository.ErrorNoSuchKey
 	_, err := pkmnCSVRepo.Get(999)
 
