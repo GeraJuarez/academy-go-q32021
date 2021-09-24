@@ -20,9 +20,9 @@ func NewPokemonInteractor(repo repository.PokemonRepository) PokemonInteractor {
 func (inter *pokemonInteractor) Get(id int) (model.Pokemon, error) {
 	val, err := inter.repo.Get(id)
 
-	if err != nil {
-		return model.Pokemon{}, err
-	}
+	// NOTE: if something is processed in this layer
+	// do not forget to check for errors
+	// do not "mask" errors from previous layers
 
-	return val, nil
+	return val, err
 }
