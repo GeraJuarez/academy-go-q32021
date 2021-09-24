@@ -26,6 +26,3 @@ func (inter *pokemonInteractor) Get(id int) (model.Pokemon, error) {
 
 	return val, nil
 }
-
-// todo:
-// csv read per request
