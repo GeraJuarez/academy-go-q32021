@@ -16,6 +16,14 @@ type AppController struct {
 	PokemonController PokemonController
 }
 
+// Hello
+func Hello(w http.ResponseWriter, r *http.Request) {
+	value := "Hello wizeline academy 2021."
+
+	w.Write([]byte(value))
+}
+
+// Pokemon
 type PokemonController interface {
 	GetValue(w http.ResponseWriter, r *http.Request)
 }

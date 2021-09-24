@@ -9,9 +9,15 @@ func Start(c controller.AppController) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	api := router.PathPrefix("/api").Subrouter()
 
+	addHelloRouter(c, api)
 	addPokemonRouter(c, api)
 
 	return router
+}
+
+func addHelloRouter(c controller.AppController, api *mux.Router) {
+	hello := api.PathPrefix("/hello").Subrouter()
+	hello.HandleFunc("", controller.Hello).Methods("GET")
 }
 
 func addPokemonRouter(c controller.AppController, api *mux.Router) {
