@@ -6,7 +6,7 @@ import (
 	"github.com/gerajuarez/wize-academy-go/model"
 )
 
-var ErrorNoSuchKey = errors.New("no such key")
+var ErrorKeyNotFound = errors.New("pokemon not found")
 
 type PokemonRepository interface {
 	Get(id int) (model.Pokemon, error)

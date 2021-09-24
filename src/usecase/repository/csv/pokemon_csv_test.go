@@ -27,7 +27,7 @@ func TestCSVReadOK(t *testing.T) {
 }
 
 func TestCSVReadErrNotFound(t *testing.T) {
-	expected := repository.ErrorNoSuchKey
+	expected := repository.ErrorKeyNotFound
 	_, err := pkmnCSVRepo.Get(999)
 
 	if !errors.Is(expected, err) {

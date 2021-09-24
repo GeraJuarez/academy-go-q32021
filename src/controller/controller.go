@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gerajuarez/wize-academy-go/usecase/interactor"
+	"github.com/gerajuarez/wize-academy-go/usecase/repository"
 	"github.com/gorilla/mux"
 )
 
@@ -39,7 +40,8 @@ func (c *pokemonController) GetValue(w http.ResponseWriter, r *http.Request) {
 	}
 
 	value, err := c.pokemonInteractor.Get(id)
-	if errors.Is(err, interactor.ErrorKeyNotFound) {
+
+	if errors.Is(err, repository.ErrorKeyNotFound) {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}

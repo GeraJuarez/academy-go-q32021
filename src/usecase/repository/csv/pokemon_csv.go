@@ -50,7 +50,7 @@ func (pkmnCSV *pokemonCSVReader) Get(id int) (model.Pokemon, error) {
 	pkmn, ok := pkmnCSV.pokemons[id]
 
 	if !ok {
-		return model.Pokemon{}, repository.ErrorNoSuchKey
+		return model.Pokemon{}, repository.ErrorKeyNotFound
 	}
 
 	return pkmn, nil
