@@ -11,13 +11,14 @@ import (
 )
 
 const (
-	PORT = "8080"
+	PORT          = "8080"
+	PATH_PKMN_CSV = "./usecase/repository/csv/resources/pokemons.csv"
 )
 
 func main() {
 	portEnv := PORT
 
-	repo := repoCSV.NewPokemonCSVReader("./usecase/repository/csv/resources/pokemons.csv")
+	repo := repoCSV.NewPokemonCSVReader(PATH_PKMN_CSV)
 	registry := registry.NewRegistry(repo)
 	router := router.Start(registry.NewAppController())
 

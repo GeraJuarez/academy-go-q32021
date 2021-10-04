@@ -11,13 +11,13 @@ import (
 
 type pokemonCSVReader struct {
 	filePath string
-	// pokemons map[int]model.Pokemon
 }
 
+// NewPokemonCSVReader return a Pokemon repository that
+// manages data from a CSV file
 func NewPokemonCSVReader(csvPath string) repository.PokemonRepository {
 	pkmnCSV := &pokemonCSVReader{
 		filePath: csvPath,
-		// pokemons: make(map[int]model.Pokemon),
 	}
 
 	return pkmnCSV

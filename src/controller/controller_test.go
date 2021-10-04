@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/gerajuarez/wize-academy-go/controller"
+
 	"github.com/gorilla/mux"
 )
 

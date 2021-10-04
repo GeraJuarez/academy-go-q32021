@@ -2,9 +2,11 @@ package router
 
 import (
 	"github.com/gerajuarez/wize-academy-go/controller"
+
 	"github.com/gorilla/mux"
 )
 
+// Start initializes the API routing
 func Start(c controller.AppController) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	api := router.PathPrefix("/api").Subrouter()

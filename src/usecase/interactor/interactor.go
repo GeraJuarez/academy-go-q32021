@@ -9,10 +9,13 @@ type pokemonInteractor struct {
 	repo repository.PokemonRepository
 }
 
+// PokemonInteractor implements the usage of the Pokemon repository
+// applying specific application business rules
 type PokemonInteractor interface {
 	Get(id int) (model.Pokemon, error)
 }
 
+// NewPokemonInteractor returns a PokemonInteractor with the given repo
 func NewPokemonInteractor(repo repository.PokemonRepository) PokemonInteractor {
 	return &pokemonInteractor{repo}
 }

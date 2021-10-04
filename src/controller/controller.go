@@ -9,6 +9,7 @@ import (
 
 	"github.com/gerajuarez/wize-academy-go/usecase/interactor"
 	"github.com/gerajuarez/wize-academy-go/usecase/repository"
+
 	"github.com/gorilla/mux"
 )
 
@@ -23,7 +24,7 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(value))
 }
 
-// Pokemon
+// PokemonController implements the interaction with the Pokemon resource
 type PokemonController interface {
 	GetValue(w http.ResponseWriter, r *http.Request)
 }
@@ -32,6 +33,7 @@ type pokemonController struct {
 	pokemonInteractor interactor.PokemonInteractor
 }
 
+// NewPokemonController creates a PokemonController using the interactor inter
 func NewPokemonController(inter interactor.PokemonInteractor) PokemonController {
 	return &pokemonController{inter}
 }
