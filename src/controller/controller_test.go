@@ -26,7 +26,7 @@ func TestHello(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := mux.NewRouter()
-	handler.HandleFunc("/hello", controller.Hello)
+	handler.HandleFunc("/hello", controller.NewHelloController().HelloWorld)
 	handler.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",

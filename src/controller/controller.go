@@ -14,11 +14,23 @@ import (
 )
 
 type AppController struct {
-	PokemonController PokemonController
+	HelloController
+	PokemonController
 }
 
-// Hello
-func Hello(w http.ResponseWriter, r *http.Request) {
+// HelloController implements the health check for the API
+type HelloController interface {
+	HelloWorld(w http.ResponseWriter, r *http.Request)
+}
+
+type helloController struct{}
+
+// NewHelloController creates a HelloController
+func NewHelloController() HelloController {
+	return &helloController{}
+}
+
+func (c *helloController) HelloWorld(w http.ResponseWriter, r *http.Request) {
 	value := "Hello wizeline academy 2021."
 
 	w.Write([]byte(value))

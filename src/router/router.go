@@ -1,6 +1,8 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/gerajuarez/wize-academy-go/controller"
 
 	"github.com/gorilla/mux"
@@ -19,11 +21,11 @@ func Start(c controller.AppController) *mux.Router {
 
 func addHelloRouter(c controller.AppController, api *mux.Router) {
 	hello := api.PathPrefix("/hello").Subrouter()
-	hello.HandleFunc("", controller.Hello).Methods("GET")
+	hello.HandleFunc("", c.HelloController.HelloWorld).Methods(http.MethodGet)
 }
 
 func addPokemonRouter(c controller.AppController, api *mux.Router) {
 	pkmn := api.PathPrefix("/v1/pokemon").Subrouter()
 
-	pkmn.HandleFunc("/{id}", c.PokemonController.GetValue).Methods("GET")
+	pkmn.HandleFunc("/{id}", c.PokemonController.GetValue).Methods(http.MethodGet)
 }

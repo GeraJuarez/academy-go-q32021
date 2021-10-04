@@ -24,7 +24,12 @@ func NewRegistry(pkmn_repo repository.PokemonRepository) Registry {
 func (r *registry) NewAppController() controller.AppController {
 	return controller.AppController{
 		PokemonController: r.NewPokemonController(),
+		HelloController:   r.NewHelloController(),
 	}
+}
+
+func (r *registry) NewHelloController() controller.HelloController {
+	return controller.NewHelloController()
 }
 
 func (r *registry) NewPokemonController() controller.PokemonController {
