@@ -15,7 +15,8 @@ import (
 
 type AppController struct {
 	HelloController
-	PokemonController
+	PokeCSV PokemonController
+	PokeAPI PokemonController
 }
 
 // HelloController implements the health check for the API
