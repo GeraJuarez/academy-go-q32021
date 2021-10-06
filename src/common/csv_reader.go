@@ -21,3 +21,22 @@ func ReadCSV(filename string) ([][]string, error) {
 
 	return lines, nil
 }
+
+// ReadCSV expects the path of a CSV file and writes new lines to the file
+func AppendCSV(path string, lines [][]string) error {
+	csvFile, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+
+	writer := csv.NewWriter(csvFile)
+	defer csvFile.Close()
+	defer writer.Flush()
+
+	err = writer.WriteAll(lines)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
