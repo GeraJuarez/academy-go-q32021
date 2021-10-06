@@ -13,6 +13,8 @@ type extApiRepo struct {
 	filePath string
 }
 
+// NewExtApiRepo creates the repository that uses the pokeAPI client
+// it uses the given csvPath to save the responses obtained from the external API
 func NewExtApiRepo(csvPath string) repository.PokemonRepository {
 	return &extApiRepo{
 		filePath: csvPath,
