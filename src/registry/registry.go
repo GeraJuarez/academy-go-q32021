@@ -4,10 +4,12 @@ import (
 	"github.com/gerajuarez/wize-academy-go/controller"
 	"github.com/gerajuarez/wize-academy-go/usecase/interactor"
 	"github.com/gerajuarez/wize-academy-go/usecase/repository"
+	repoCSV "github.com/gerajuarez/wize-academy-go/usecase/repository/csv"
+	repoAPI "github.com/gerajuarez/wize-academy-go/usecase/repository/extAPI"
 )
 
 type registry struct {
-	pkmn_repo repository.PokemonRepository
+	csvFile string
 }
 
 // Registry resolves dependencies using constructor injection
@@ -16,15 +18,16 @@ type Registry interface {
 }
 
 // NewRegistry returns a Registry interface for the Pokemon repository
-func NewRegistry(pkmn_repo repository.PokemonRepository) Registry {
-	return &registry{pkmn_repo}
+func NewRegistry(filePath string) Registry {
+	return &registry{filePath}
 }
 
 // NewAppController starts the injection for al the respositories in the registry
 func (r *registry) NewAppController() controller.AppController {
 	return controller.AppController{
-		PokemonController: r.NewPokemonController(),
-		HelloController:   r.NewHelloController(),
+		HelloController: r.NewHelloController(),
+		PokeCSV:         r.NewPokemonController(),
+		PokeAPI:         r.NewPokemonApiCon(),
 	}
 }
 
@@ -41,5 +44,18 @@ func (r *registry) NewPokemonInteractor() interactor.PokemonInteractor {
 }
 
 func (r *registry) NewPokemonRepository() repository.PokemonRepository {
-	return r.pkmn_repo
+	return repoCSV.NewPokemonCSVReader(r.csvFile)
+}
+
+func (r *registry) NewPokemonApiCon() controller.PokemonController {
+	return controller.NewPokemonController(r.NewPokemonApiInter())
+}
+
+func (r *registry) NewPokemonApiInter() interactor.PokemonInteractor {
+	return interactor.NewPokemonInteractor(r.NewPokemonApiRepo())
+}
+
+func (r *registry) NewPokemonApiRepo() repository.PokemonRepository {
+	//pokeClient := pokeAPI.NewPokeAPIClient()
+	return repoAPI.NewExtApiRepo(r.csvFile)
 }
