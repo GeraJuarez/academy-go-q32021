@@ -1,13 +1,14 @@
 package repository
 
 import (
-	"errors"
 	"io/ioutil"
 	"log"
 	"os"
 	"testing"
 
 	"github.com/gerajuarez/wize-academy-go/usecase/repository"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var pkmnCSVRepo = NewPokemonCSVReader("./resources/pokemons.csv")
@@ -17,20 +18,29 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestCSVReadOK(t *testing.T) {
-	expected := "bulbasaur"
-	result, _ := pkmnCSVRepo.Get(1)
-
-	if expected != result.Name {
-		t.Errorf("wrong type: got %v want %v", result, expected)
+func TestCSVGet(t *testing.T) {
+	cases := []struct {
+		testName string
+		id       int
+		err      error
+	}{
+		{
+			"PkmnCSV Repo OK",
+			1,
+			nil,
+		},
+		{
+			"PkmnCSV Repo NotFound",
+			-1,
+			repository.ErrorKeyNotFound,
+		},
 	}
-}
 
-func TestCSVReadErrNotFound(t *testing.T) {
-	expected := repository.ErrorKeyNotFound
-	_, err := pkmnCSVRepo.Get(999)
+	for _, c := range cases {
+		t.Run(c.testName, func(t *testing.T) {
+			_, err := pkmnCSVRepo.Get(c.id)
+			assert.Equal(t, c.err, err, "Error should be equal")
 
-	if !errors.Is(expected, err) {
-		t.Errorf("wrong type: got %v want %v", err, expected)
+		})
 	}
 }

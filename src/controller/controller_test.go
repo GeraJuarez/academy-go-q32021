@@ -12,9 +12,9 @@ import (
 	"github.com/gerajuarez/wize-academy-go/controller"
 	"github.com/gerajuarez/wize-academy-go/model"
 	"github.com/gerajuarez/wize-academy-go/usecase/repository"
-	"github.com/stretchr/testify/mock"
 
 	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestMain(m *testing.M) {
