@@ -1,13 +1,10 @@
 package pokeAPI
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
-
-	"github.com/gerajuarez/wize-academy-go/model"
 )
 
 const BASE_URL_PKMN = "http://pokeapi.co/api/v2/pokemon"
@@ -25,24 +22,20 @@ func NewPokeAPIClient() *pokeAPIClient {
 	}
 }
 
-func (c *pokeAPIClient) GetPokemonByID(id int) (model.Pokemon, error) {
+// GetPokemonByID requests a GetPokemon by ID from pokeAPI
+// and retuns a body, response http status, and error
+func (c *pokeAPIClient) GetPokemonByID(id int) ([]byte, int, error) {
 	res, err := http.Get(fmt.Sprintf("%s/%d", c.BaseURL, id))
 	if err != nil {
-		return model.NullPokemon(), err
+		return nil, res.StatusCode, err
 	}
 
 	defer res.Body.Close()
-	if res.StatusCode < http.StatusOK || res.StatusCode >= http.StatusBadRequest {
-		return model.NullPokemon(), fmt.Errorf("error requesting pokeAPI, status code: %d", res.StatusCode)
-	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return model.NullPokemon(), err
+		return nil, res.StatusCode, err
 	}
 
-	var pokemon model.Pokemon
-	json.Unmarshal(body, &pokemon)
-	return pokemon, nil
-
+	return body, res.StatusCode, nil
 }

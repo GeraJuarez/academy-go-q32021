@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/gerajuarez/wize-academy-go/common"
@@ -23,10 +26,21 @@ func NewExtApiRepo(csvPath string) repository.PokemonRepository {
 
 func (api *extApiRepo) Get(id int) (model.Pokemon, error) {
 	pokeClient := pokeAPI.NewPokeAPIClient()
-	pkmn, err := pokeClient.GetPokemonByID(id)
+	body, statusCode, err := pokeClient.GetPokemonByID(id)
 	if err != nil {
 		return model.NullPokemon(), err
 	}
+
+	if statusCode == http.StatusNotFound {
+		return model.NullPokemon(), repository.ErrorKeyNotFound
+	}
+
+	if statusCode < http.StatusOK || statusCode >= http.StatusBadRequest {
+		return model.NullPokemon(), fmt.Errorf("PokeAPI Error: %s", string(body))
+	}
+
+	var pkmn model.Pokemon
+	json.Unmarshal(body, &pkmn)
 
 	return api.Post(pkmn)
 }
