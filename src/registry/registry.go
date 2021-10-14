@@ -2,12 +2,10 @@ package registry
 
 import (
 	"github.com/gerajuarez/wize-academy-go/controller"
-	"github.com/gerajuarez/wize-academy-go/usecase/interactor"
-	"github.com/gerajuarez/wize-academy-go/usecase/repository"
 )
 
 type registry struct {
-	pkmn_repo repository.PokemonRepository
+	csvFile string
 }
 
 // Registry resolves dependencies using constructor injection
@@ -16,25 +14,15 @@ type Registry interface {
 }
 
 // NewRegistry returns a Registry interface for the Pokemon repository
-func NewRegistry(pkmn_repo repository.PokemonRepository) Registry {
-	return &registry{pkmn_repo}
+func NewRegistry(filePath string) Registry {
+	return &registry{filePath}
 }
 
 // NewAppController starts the injection for al the respositories in the registry
 func (r *registry) NewAppController() controller.AppController {
 	return controller.AppController{
-		PokemonController: r.NewPokemonController(),
+		HelloController: r.RegisterHello(),
+		PokeCSV:         r.RegisterPokemonController(),
+		PokeAPI:         r.RegisterPokemonApiCon(),
 	}
-}
-
-func (r *registry) NewPokemonController() controller.PokemonController {
-	return controller.NewPokemonController(r.NewPokemonInteractor())
-}
-
-func (r *registry) NewPokemonInteractor() interactor.PokemonInteractor {
-	return interactor.NewPokemonInteractor(r.NewPokemonRepository())
-}
-
-func (r *registry) NewPokemonRepository() repository.PokemonRepository {
-	return r.pkmn_repo
 }

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"testing"
@@ -11,11 +10,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var pkmnCSVRepo = NewPokemonCSVReader("./resources/pokemons.csv")
+const CSV_TEST_PATH = "./test.csv"
+
+var pkmnCSVRepo = NewExtApiRepo(CSV_TEST_PATH)
 
 func TestMain(m *testing.M) {
-	log.SetOutput(ioutil.Discard)
-	os.Exit(m.Run())
+	code := m.Run()
+	err := os.Remove(CSV_TEST_PATH)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	os.Exit(code)
 }
 
 func TestCSVGet(t *testing.T) {
@@ -40,7 +46,6 @@ func TestCSVGet(t *testing.T) {
 		t.Run(c.testName, func(t *testing.T) {
 			_, err := pkmnCSVRepo.Get(c.id)
 			assert.Equal(t, c.err, err, "Error should be equal")
-
 		})
 	}
 }

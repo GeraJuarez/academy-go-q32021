@@ -7,7 +7,6 @@ import (
 
 	"github.com/gerajuarez/wize-academy-go/registry"
 	"github.com/gerajuarez/wize-academy-go/router"
-	repoCSV "github.com/gerajuarez/wize-academy-go/usecase/repository/csv"
 )
 
 const (
@@ -18,8 +17,7 @@ const (
 func main() {
 	portEnv := PORT
 
-	repo := repoCSV.NewPokemonCSVReader(PATH_PKMN_CSV)
-	registry := registry.NewRegistry(repo)
+	registry := registry.NewRegistry(PATH_PKMN_CSV)
 	router := router.Start(registry.NewAppController())
 
 	srv := &http.Server{
