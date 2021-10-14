@@ -25,7 +25,7 @@ func NewPokeAPIClient() *pokeAPIClient {
 // GetPokemonByID requests a GetPokemon by ID from pokeAPI
 // and retuns a body, response http status, and error
 func (c *pokeAPIClient) GetPokemonByID(id int) ([]byte, int, error) {
-	res, err := http.Get(fmt.Sprintf("%s/%d", c.BaseURL, id))
+	res, err := c.HTTPClient.Get(fmt.Sprintf("%s/%d", c.BaseURL, id))
 	if err != nil {
 		return nil, res.StatusCode, err
 	}

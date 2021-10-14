@@ -31,18 +31,16 @@ func (api *extApiRepo) Get(id int) (model.Pokemon, error) {
 		return model.NullPokemon(), err
 	}
 
-	if statusCode == http.StatusNotFound {
+	switch statusCode {
+	case http.StatusOK:
+		var pkmn model.Pokemon
+		json.Unmarshal(body, &pkmn)
+		return api.Post(pkmn)
+	case http.StatusNotFound:
 		return model.NullPokemon(), repository.ErrorKeyNotFound
-	}
-
-	if statusCode < http.StatusOK || statusCode >= http.StatusBadRequest {
+	default:
 		return model.NullPokemon(), fmt.Errorf("PokeAPI Error: %s", string(body))
 	}
-
-	var pkmn model.Pokemon
-	json.Unmarshal(body, &pkmn)
-
-	return api.Post(pkmn)
 }
 
 func (api *extApiRepo) Post(pkmn model.Pokemon) (model.Pokemon, error) {
