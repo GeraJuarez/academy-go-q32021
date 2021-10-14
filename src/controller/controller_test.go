@@ -17,6 +17,11 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+const (
+	HELLO_PATH = "/hello"
+	PKMN_PATH  = "/v1/pokemon"
+)
+
 func TestMain(m *testing.M) {
 	log.SetOutput(ioutil.Discard)
 	os.Exit(m.Run())
@@ -42,9 +47,9 @@ func TestControllerStatus(t *testing.T) {
 	}{
 		{
 			"hello Controller OK",
-			"/hello",
+			HELLO_PATH,
 			http.MethodGet,
-			"/hello",
+			HELLO_PATH,
 			controller.NewHelloController().HelloWorld,
 			http.StatusOK,
 		},
@@ -79,25 +84,25 @@ func TestPkmnController_GetValue(t *testing.T) {
 	}{
 		{
 			"Pokemon CSV Controller OK",
-			"/v1/pokemon/1",
+			PKMN_PATH + "/1",
 			http.MethodGet,
-			"/v1/pokemon/{id}",
+			PKMN_PATH + "/{id}",
 			http.StatusOK,
 			nil,
 		},
 		{
 			"Pokemon CSV Controller Not found",
-			"/v1/pokemon/1",
+			PKMN_PATH + "/1",
 			http.MethodGet,
-			"/v1/pokemon/{id}",
+			PKMN_PATH + "/{id}",
 			http.StatusNotFound,
 			repository.ErrorKeyNotFound,
 		},
 		{
 			"Pokemon CSV Controller Server Error",
-			"/v1/pokemon/1",
+			PKMN_PATH + "/1",
 			http.MethodGet,
-			"/v1/pokemon/{id}",
+			PKMN_PATH + "/{id}",
 			http.StatusInternalServerError,
 			errors.New("test error"),
 		},
