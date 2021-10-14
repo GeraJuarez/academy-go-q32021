@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/gerajuarez/wize-academy-go/common"
+	csvUtils "github.com/gerajuarez/wize-academy-go/infrastructure/csv_utils"
 	"github.com/gerajuarez/wize-academy-go/model"
 	"github.com/gerajuarez/wize-academy-go/usecase/repository"
 )
@@ -24,7 +24,7 @@ func NewPokemonCSVReader(csvPath string) repository.PokemonRepository {
 }
 
 func (pkmnCSV *pokemonCSVReader) Get(id int) (model.Pokemon, error) {
-	csvLines, err := common.ReadCSV(pkmnCSV.filePath)
+	csvLines, err := csvUtils.ReadCSV(pkmnCSV.filePath)
 	if err != nil {
 		fmt.Println(err)
 		return model.NullPokemon(), err

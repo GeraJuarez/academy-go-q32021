@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gerajuarez/wize-academy-go/common"
+	csvUtils "github.com/gerajuarez/wize-academy-go/infrastructure/csv_utils"
 	pokeAPI "github.com/gerajuarez/wize-academy-go/infrastructure/poke_api"
 	"github.com/gerajuarez/wize-academy-go/model"
 	"github.com/gerajuarez/wize-academy-go/usecase/repository"
@@ -50,7 +50,7 @@ func (api *extApiRepo) Post(pkmn model.Pokemon) (model.Pokemon, error) {
 	row := []string{strconv.Itoa(pkmn.ID), pkmn.Name}
 	data = append(data, row)
 
-	err := common.AppendCSV(api.filePath, data)
+	err := csvUtils.AppendCSV(api.filePath, data)
 	if err != nil {
 		return model.NullPokemon(), err
 	}
