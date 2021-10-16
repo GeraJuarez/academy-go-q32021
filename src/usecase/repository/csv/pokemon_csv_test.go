@@ -63,14 +63,6 @@ func TestCSVGetAll(t *testing.T) {
 			nil,
 		},
 		{
-			"Odd ID pokemons EOF, 900 total, 450 odd pkmns",
-			900,
-			10,
-			repository.IsOdd,
-			250,
-			nil,
-		},
-		{
 			"Odd ID pokemons, same workers, same items",
 			200,
 			200,
