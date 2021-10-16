@@ -1,9 +1,13 @@
 package interactor
 
 import (
+	"errors"
+
 	"github.com/gerajuarez/wize-academy-go/model"
 	"github.com/gerajuarez/wize-academy-go/usecase/repository"
 )
+
+var ErrorInvalidTypeParam = errors.New("invalid type paramter")
 
 type pokemonInteractor struct {
 	repo repository.PokemonRepository
@@ -13,6 +17,7 @@ type pokemonInteractor struct {
 // applying specific application business rules
 type PokemonInteractor interface {
 	Get(id int) (model.Pokemon, error)
+	GetAllByType(typeStr string, items int, itemsPerWorker int) ([]model.Pokemon, error)
 }
 
 // NewPokemonInteractor returns a PokemonInteractor with the given repo
@@ -28,4 +33,26 @@ func (inter *pokemonInteractor) Get(id int) (model.Pokemon, error) {
 	// do not "mask" errors from previous layers
 
 	return val, err
+}
+
+func (inter *pokemonInteractor) GetAllByType(typeStr string, items int, itemsPerWorker int) ([]model.Pokemon, error) {
+	validationFunc, err := getValidationFunction(typeStr)
+	if err != nil {
+		return nil, err
+	}
+
+	values, err := inter.repo.GetAllValid(items, itemsPerWorker, validationFunc)
+
+	return values, err
+}
+
+func getValidationFunction(filter string) (func(id int) bool, error) {
+	switch filter {
+	case "odd":
+		return repository.IsOdd, nil
+	case "even":
+		return repository.IsEven, nil
+	default:
+		return nil, ErrorInvalidTypeParam
+	}
 }

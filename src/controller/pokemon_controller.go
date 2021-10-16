@@ -15,6 +15,7 @@ import (
 // PokemonController implements the interaction with the Pokemon resource
 type PokemonController interface {
 	GetValue(w http.ResponseWriter, r *http.Request)
+	GetAll(w http.ResponseWriter, r *http.Request)
 }
 
 type pokemonController struct {
@@ -51,6 +52,40 @@ func (c *pokemonController) GetValue(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	enc := json.NewEncoder(w)
 	if err := enc.Encode(value); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (c *pokemonController) GetAll(w http.ResponseWriter, r *http.Request) {
+	paramType := r.URL.Query().Get("type")
+	paramItems := r.URL.Query().Get("items")
+	paramPerWorker := r.URL.Query().Get("items_per_workers")
+
+	intItems, err := strconv.Atoi(paramItems)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	intPerWorker, err := strconv.Atoi(paramPerWorker)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	values, err := c.pokemonInteractor.GetAllByType(paramType, intItems, intPerWorker)
+	if errors.Is(err, repository.ErrorItemZeroParam) || errors.Is(err, repository.ErrorWorkerZeroParam) || errors.Is(err, interactor.ErrorInvalidTypeParam) {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	enc := json.NewEncoder(w)
+	if err := enc.Encode(values); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
