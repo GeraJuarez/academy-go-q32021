@@ -1,5 +1,18 @@
 # Wizeline academy Go final project
 
+## Requirements
+* golang: 1.16
+
+## How to run
+
+```bash
+git clone <repo-name> # download source code from github
+cd academy-go-q32021/src # move to src directory
+go mod download
+go test ./... # run unit tests
+go run . # run main program
+```
+
 ## API DOC
 
 URL `http://localhost:8080/api`
