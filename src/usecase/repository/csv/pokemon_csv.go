@@ -66,6 +66,7 @@ func (pkmnCSV *pokemonCSVReader) GetAllValid(items int, itemsPerWorker int, isVa
 	if items < itemsPerWorker {
 		itemsPerWorker = items
 	}
+
 	f, err := os.Open(pkmnCSV.filePath)
 	if err != nil {
 		return nil, err
@@ -74,11 +75,17 @@ func (pkmnCSV *pokemonCSVReader) GetAllValid(items int, itemsPerWorker int, isVa
 
 	reader := csv.NewReader(f)
 	totalWorkers := items / itemsPerWorker
+	totalWorkers += items % itemsPerWorker
 	source := make(chan model.Pokemon)
 	dests := Split(source, totalWorkers)
+	filterPkmn := make([]model.Pokemon, 0)
 
 	go func() {
 		for {
+			if len(filterPkmn) >= items {
+				break
+			}
+
 			line, err := reader.Read()
 			if err == io.EOF {
 				break
@@ -93,14 +100,17 @@ func (pkmnCSV *pokemonCSVReader) GetAllValid(items int, itemsPerWorker int, isVa
 				//return nil, err
 			}
 			source <- model.Pokemon{ID: pkmnId, Name: csvName}
+
 		}
 
 		close(source)
 	}()
 
-	filterPkmn := make([]model.Pokemon, 0)
 	for pkmn := range Funnel(itemsPerWorker, isValid, dests...) {
 		filterPkmn = append(filterPkmn, pkmn)
+		if len(filterPkmn) == items {
+			break
+		}
 	}
 
 	return filterPkmn, nil
