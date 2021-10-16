@@ -110,6 +110,14 @@ func TestCSVGetAll(t *testing.T) {
 			5,
 			nil,
 		},
+		{
+			"Items not divisible per worker",
+			5,
+			2,
+			repository.IsOdd,
+			5,
+			nil,
+		},
 	}
 
 	for _, c := range cases {

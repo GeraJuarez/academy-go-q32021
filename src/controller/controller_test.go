@@ -2,6 +2,7 @@ package controller_test
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -34,6 +35,11 @@ type MockPockemonInteractor struct {
 func (m *MockPockemonInteractor) Get(id int) (model.Pokemon, error) {
 	args := m.Called(id)
 	return args.Get(0).(model.Pokemon), args.Error(1)
+}
+
+func (m *MockPockemonInteractor) GetAllByType(typeStr string, items int, itemsPerWorker int) ([]model.Pokemon, error) {
+	args := m.Called(typeStr, items, itemsPerWorker)
+	return args.Get(0).([]model.Pokemon), args.Error(1)
 }
 
 func TestControllerStatus(t *testing.T) {
@@ -121,6 +127,86 @@ func TestPkmnController_GetValue(t *testing.T) {
 			rr := httptest.NewRecorder()
 			handler := mux.NewRouter()
 			handler.HandleFunc(c.route, controller.NewPokemonController(mock).GetValue)
+			handler.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != c.expectedStatus {
+				t.Errorf("Expected %d,got %d", c.expectedStatus, status)
+			}
+		})
+	}
+
+}
+
+func TestPkmnController_GetAll(t *testing.T) {
+	cases := []struct {
+		testName       string
+		request        string
+		typeParam      string
+		itemsParam     string
+		workerParams   string
+		expectedStatus int
+		err            error
+	}{
+		{
+			"Pokemon CSV Controller OK",
+			PKMN_PATH,
+			"odd",
+			"1",
+			"1",
+			http.StatusOK,
+			nil,
+		},
+		{
+			"Pokemon CSV Bad request",
+			PKMN_PATH,
+			"odd",
+			"0",
+			"1",
+			http.StatusBadRequest,
+			repository.ErrorItemZeroParam,
+		},
+		{
+			"Pokemon CSV unknown error",
+			PKMN_PATH,
+			"odd",
+			"0",
+			"1",
+			http.StatusInternalServerError,
+			errors.New("new error"),
+		},
+		{
+			"Pokemon CSV invalid items param",
+			PKMN_PATH,
+			"odd",
+			"o",
+			"1",
+			http.StatusBadRequest,
+			nil,
+		},
+		{
+			"Pokemon CSV invalid worker param",
+			PKMN_PATH,
+			"odd",
+			"1",
+			"two",
+			http.StatusBadRequest,
+			nil,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.testName, func(t *testing.T) {
+			req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s?type=%s&items=%s&items_per_workers=%s", c.request, c.typeParam, c.itemsParam, c.workerParams), nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			mockInter := new(MockPockemonInteractor)
+			mockInter.On("GetAllByType", c.typeParam, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return([]model.Pokemon{}, c.err)
+
+			rr := httptest.NewRecorder()
+			handler := mux.NewRouter()
+			handler.HandleFunc(c.request, controller.NewPokemonController(mockInter).GetAll)
 			handler.ServeHTTP(rr, req)
 
 			if status := rr.Code; status != c.expectedStatus {
