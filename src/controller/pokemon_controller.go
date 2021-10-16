@@ -16,6 +16,7 @@ import (
 type PokemonController interface {
 	GetValue(w http.ResponseWriter, r *http.Request)
 	GetAll(w http.ResponseWriter, r *http.Request)
+	PostByID(w http.ResponseWriter, r *http.Request)
 }
 
 type pokemonController struct {
@@ -86,6 +87,35 @@ func (c *pokemonController) GetAll(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	enc := json.NewEncoder(w)
 	if err := enc.Encode(values); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (c *pokemonController) PostByID(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	reqId := vars["id"]
+
+	id, err := strconv.Atoi(reqId)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	value, err := c.pokemonInteractor.PostById(id)
+
+	if errors.Is(err, repository.ErrorKeyNotFound) {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	enc := json.NewEncoder(w)
+	if err := enc.Encode(value); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

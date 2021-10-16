@@ -23,6 +23,11 @@ func (m *MockPockemonRepo) GetAllValid(items int, itemsPerWorker int, isValid fu
 	return args.Get(0).([]model.Pokemon), args.Error(1)
 }
 
+func (m *MockPockemonRepo) PostById(id int) (model.Pokemon, error) {
+	args := m.Called(id)
+	return args.Get(0).(model.Pokemon), args.Error(1)
+}
+
 func TestPkmnController_GetAllValid(t *testing.T) {
 	cases := []struct {
 		testName     string

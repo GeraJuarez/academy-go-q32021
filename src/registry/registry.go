@@ -23,6 +23,5 @@ func (r *registry) NewAppController() controller.AppController {
 	return controller.AppController{
 		HelloController: r.RegisterHello(),
 		PokeCSV:         r.RegisterPokemonController(),
-		PokeAPI:         r.RegisterPokemonApiCon(),
 	}
 }

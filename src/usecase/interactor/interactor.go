@@ -18,6 +18,7 @@ type pokemonInteractor struct {
 type PokemonInteractor interface {
 	Get(id int) (model.Pokemon, error)
 	GetAllByType(typeStr string, items int, itemsPerWorker int) ([]model.Pokemon, error)
+	PostById(id int) (model.Pokemon, error)
 }
 
 // NewPokemonInteractor returns a PokemonInteractor with the given repo
@@ -44,6 +45,12 @@ func (inter *pokemonInteractor) GetAllByType(typeStr string, items int, itemsPer
 	values, err := inter.repo.GetAllValid(items, itemsPerWorker, validationFunc)
 
 	return values, err
+}
+
+func (inter *pokemonInteractor) PostById(id int) (model.Pokemon, error) {
+	val, err := inter.repo.PostById(id)
+
+	return val, err
 }
 
 func getValidationFunction(filter string) (func(id int) bool, error) {

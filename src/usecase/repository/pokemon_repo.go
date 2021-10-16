@@ -14,6 +14,7 @@ var ErrorWorkerZeroParam = errors.New("items per worker must be higher than 0")
 type PokemonRepository interface {
 	Get(id int) (model.Pokemon, error)
 	GetAllValid(items int, itemsPerWorker int, isValid func(id int) bool) ([]model.Pokemon, error)
+	PostById(id int) (model.Pokemon, error)
 }
 
 func IsEven(num int) bool {

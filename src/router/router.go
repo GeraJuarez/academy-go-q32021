@@ -15,7 +15,6 @@ func Start(c controller.AppController) *mux.Router {
 
 	addHelloRouter(c, api)
 	addPokemonRouter(c, api)
-	addPokemonRouterV2(c, api)
 
 	return router
 }
@@ -35,10 +34,5 @@ func addPokemonRouter(c controller.AppController, api *mux.Router) {
 			"type", "{type:odd|even}",
 			"items", "{items:[0-9]+}",
 			"items_per_workers", "{items_per_workers:[0-9]+}")
-}
-
-func addPokemonRouterV2(c controller.AppController, api *mux.Router) {
-	pkmn := api.PathPrefix("/v2/pokemon").Subrouter()
-
-	pkmn.HandleFunc("/{id}", c.PokeAPI.GetValue).Methods(http.MethodGet)
+	pkmn.HandleFunc("/{id}", c.PokeCSV.PostByID).Methods(http.MethodPost)
 }

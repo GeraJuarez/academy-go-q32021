@@ -67,15 +67,7 @@ func TestCSVGetAll(t *testing.T) {
 			900,
 			10,
 			repository.IsOdd,
-			450,
-			nil,
-		},
-		{
-			"Odd ID pokemons EOF, same workers, same items",
-			900,
-			900,
-			repository.IsOdd,
-			450,
+			250,
 			nil,
 		},
 		{

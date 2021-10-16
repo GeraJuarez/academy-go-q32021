@@ -42,6 +42,11 @@ func (m *MockPockemonInteractor) GetAllByType(typeStr string, items int, itemsPe
 	return args.Get(0).([]model.Pokemon), args.Error(1)
 }
 
+func (m *MockPockemonInteractor) PostById(id int) (model.Pokemon, error) {
+	args := m.Called(id)
+	return args.Get(0).(model.Pokemon), args.Error(1)
+}
+
 func TestControllerStatus(t *testing.T) {
 	cases := []struct {
 		testName       string
