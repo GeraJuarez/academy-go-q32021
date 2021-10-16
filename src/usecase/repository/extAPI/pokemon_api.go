@@ -55,3 +55,7 @@ func (api *extApiRepo) Post(pkmn model.Pokemon) (model.Pokemon, error) {
 
 	return pkmn, nil
 }
+
+func (api *extApiRepo) GetAllValid(items int, itemsPerWorker int, isValid func(id int) bool) ([]model.Pokemon, error) {
+	return nil, nil
+}
