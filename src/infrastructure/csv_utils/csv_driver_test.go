@@ -49,3 +49,13 @@ func TestReadCSV(t *testing.T) {
 		}
 	}
 }
+
+func TestCountCSV(t *testing.T) {
+	count, err := CountCSVLines(CSV_TEST_PATH)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if count != len(cases) {
+		t.Errorf("Expected %v,got %v", count, len(cases))
+	}
+}

@@ -64,7 +64,7 @@ func TestPkmnController_GetAllValid(t *testing.T) {
 			mockRepo := new(MockPockemonRepo)
 			mockRepo.On("GetAllValid", c.itemsParam, c.workerParams, mock.AnythingOfType("func(int) bool")).Return([]model.Pokemon{}, c.err)
 			pokeInter := interactor.NewPokemonInteractor(mockRepo)
-			_, err := pokeInter.GetAllByType(c.typeParam, c.itemsParam, c.workerParams)
+			_, err := pokeInter.GetItemsByType(c.typeParam, c.itemsParam, c.workerParams)
 			assert.Equal(t, c.err, err, "Error should be equal")
 		})
 	}

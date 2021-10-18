@@ -34,5 +34,10 @@ func addPokemonRouter(c controller.AppController, api *mux.Router) {
 			"type", "{type:odd|even}",
 			"items", "{items:[0-9]+}",
 			"items_per_workers", "{items_per_workers:[0-9]+}")
+	pkmn.HandleFunc("", c.PokeCSV.GetAllNoItems).
+		Methods(http.MethodGet).
+		Queries(
+			"type", "{type:odd|even}",
+			"items_per_workers", "{items_per_workers:[0-9]+}")
 	pkmn.HandleFunc("/{id}", c.PokeCSV.PostByID).Methods(http.MethodPost)
 }

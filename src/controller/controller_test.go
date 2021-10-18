@@ -37,8 +37,13 @@ func (m *MockPockemonInteractor) Get(id int) (model.Pokemon, error) {
 	return args.Get(0).(model.Pokemon), args.Error(1)
 }
 
-func (m *MockPockemonInteractor) GetAllByType(typeStr string, items int, itemsPerWorker int) ([]model.Pokemon, error) {
+func (m *MockPockemonInteractor) GetItemsByType(typeStr string, items int, itemsPerWorker int) ([]model.Pokemon, error) {
 	args := m.Called(typeStr, items, itemsPerWorker)
+	return args.Get(0).([]model.Pokemon), args.Error(1)
+}
+
+func (m *MockPockemonInteractor) GetAllByType(typeStr string, itemsPerWorker int) ([]model.Pokemon, error) {
+	args := m.Called(typeStr, itemsPerWorker)
 	return args.Get(0).([]model.Pokemon), args.Error(1)
 }
 
@@ -207,7 +212,7 @@ func TestPkmnController_GetAll(t *testing.T) {
 			}
 
 			mockInter := new(MockPockemonInteractor)
-			mockInter.On("GetAllByType", c.typeParam, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return([]model.Pokemon{}, c.err)
+			mockInter.On("GetItemsByType", c.typeParam, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return([]model.Pokemon{}, c.err)
 
 			rr := httptest.NewRecorder()
 			handler := mux.NewRouter()

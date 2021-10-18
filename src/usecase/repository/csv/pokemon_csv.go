@@ -17,19 +17,22 @@ import (
 )
 
 type pokemonCSVReader struct {
-	filePath string
+	filePath   string
+	pokeClient pokeAPI.PokeAPIClient
 }
 
 // NewPokemonCSVReader return a Pokemon repository that
 // manages data from a CSV file
-func NewPokemonCSVReader(csvPath string) repository.PokemonRepository {
+func NewPokemonCSVReader(csvPath string, httpClient pokeAPI.PokeAPIClient) repository.PokemonRepository {
 	pkmnCSV := &pokemonCSVReader{
-		filePath: csvPath,
+		filePath:   csvPath,
+		pokeClient: httpClient,
 	}
 
 	return pkmnCSV
 }
 
+// Get returns a pokemon from the CSV fil resource that matches the ID
 func (pkmnCSV *pokemonCSVReader) Get(id int) (model.Pokemon, error) {
 	csvLines, err := csvUtils.ReadCSV(pkmnCSV.filePath)
 	if err != nil {
@@ -59,7 +62,17 @@ func (pkmnCSV *pokemonCSVReader) Get(id int) (model.Pokemon, error) {
 	return model.NullPokemon(), repository.ErrorKeyNotFound
 }
 
+// GetAllValid returns a slice of pokemons which id is validated by the given function
+// items are the maximum lenght of the slice to be returned, if the CSV does not have enough records, the number may be lower than expected.
+// itemsPerWorker determines the concurrency level
 func (pkmnCSV *pokemonCSVReader) GetAllValid(items int, itemsPerWorker int, isValid func(id int) bool) ([]model.Pokemon, error) {
+	if items == repository.ALL_ITEM_QUERY {
+		fileCount, err := csvUtils.CountCSVLines(pkmnCSV.filePath)
+		if err != nil {
+			return []model.Pokemon{}, err
+		}
+		items = fileCount
+	}
 	if items <= 0 {
 		return []model.Pokemon{}, repository.ErrorItemZeroParam
 	}
@@ -119,9 +132,9 @@ func (pkmnCSV *pokemonCSVReader) GetAllValid(items int, itemsPerWorker int, isVa
 	return filterPkmn, nil
 }
 
+// PostById calls an external source to fetch the pokemon with the specified ID and it is added to the CSV resource file.
 func (pkmnCSV *pokemonCSVReader) PostById(id int) (model.Pokemon, error) {
-	pokeClient := pokeAPI.NewPokeAPIClient()
-	body, statusCode, err := pokeClient.GetPokemonByID(id)
+	body, statusCode, err := pkmnCSV.pokeClient.GetPokemonByID(id)
 	if err != nil {
 		return model.NullPokemon(), err
 	}
@@ -138,6 +151,7 @@ func (pkmnCSV *pokemonCSVReader) PostById(id int) (model.Pokemon, error) {
 	}
 }
 
+// Post adds a pokemon to the CSV resource file.
 func (pkmnCSV *pokemonCSVReader) Post(pkmn model.Pokemon) (model.Pokemon, error) {
 	var data [][]string
 	row := []string{strconv.Itoa(pkmn.ID), pkmn.Name}

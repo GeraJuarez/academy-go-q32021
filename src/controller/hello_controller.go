@@ -14,6 +14,7 @@ func NewHelloController() HelloController {
 	return &helloController{}
 }
 
+// HelloWorld handles the health check endpoint
 func (c *helloController) HelloWorld(w http.ResponseWriter, r *http.Request) {
 	value := "Hello wizeline academy 2021."
 

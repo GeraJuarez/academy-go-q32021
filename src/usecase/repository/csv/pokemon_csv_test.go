@@ -3,12 +3,13 @@ package repository
 import (
 	"testing"
 
+	pokeAPI "github.com/gerajuarez/wize-academy-go/infrastructure/poke_api"
 	"github.com/gerajuarez/wize-academy-go/usecase/repository"
 
 	"github.com/stretchr/testify/assert"
 )
 
-var pkmnCSVRepo = NewPokemonCSVReader("./resources/pokemons.csv")
+var pkmnCSVRepo = NewPokemonCSVReader("./resources/pokemons.csv", pokeAPI.NewPokeAPIClient())
 
 func TestCSVGet(t *testing.T) {
 	cases := []struct {

@@ -14,8 +14,13 @@ type pokeAPIClient struct {
 	HTTPClient *http.Client
 }
 
+// PokeAPIClient calls the external pokeAPI
+type PokeAPIClient interface {
+	GetPokemonByID(id int) ([]byte, int, error)
+}
+
 // NewPokeAPIClient return a client that calls pokeAPI
-func NewPokeAPIClient() *pokeAPIClient {
+func NewPokeAPIClient() PokeAPIClient {
 	return &pokeAPIClient{
 		BaseURL:    BASE_URL_PKMN,
 		HTTPClient: &http.Client{Timeout: time.Minute},
