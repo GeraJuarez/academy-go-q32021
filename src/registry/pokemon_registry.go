@@ -16,5 +16,5 @@ func (r *registry) RegisterPokemonInter() interactor.PokemonInteractor {
 }
 
 func (r *registry) RegisterPokemonRepo() repository.PokemonRepository {
-	return repoCSV.NewPokemonCSVReader(r.csvFile)
+	return repoCSV.NewPokemonCSVReader(r.csvFile, r.pokeExtAPI)
 }
