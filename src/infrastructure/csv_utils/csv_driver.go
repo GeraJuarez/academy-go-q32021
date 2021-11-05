@@ -40,3 +40,19 @@ func AppendCSV(path string, lines [][]string) error {
 
 	return nil
 }
+
+// CountCSVLines expects a CSV file in filename and count the number of lines
+func CountCSVLines(filename string) (int, error) {
+	f, err := os.Open(filename)
+	if err != nil {
+		return -1, err
+	}
+	defer f.Close()
+
+	lines, err := csv.NewReader(f).ReadAll()
+	if err != nil {
+		return -1, err
+	}
+
+	return len(lines), nil
+}

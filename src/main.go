@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	pokeAPI "github.com/gerajuarez/wize-academy-go/infrastructure/poke_api"
 	"github.com/gerajuarez/wize-academy-go/registry"
 	"github.com/gerajuarez/wize-academy-go/router"
 )
@@ -17,7 +18,8 @@ const (
 func main() {
 	portEnv := PORT
 
-	registry := registry.NewRegistry(PATH_PKMN_CSV)
+	extAPI := pokeAPI.NewPokeAPIClient()
+	registry := registry.NewRegistry(PATH_PKMN_CSV, extAPI)
 	router := router.Start(registry.NewAppController())
 
 	srv := &http.Server{
